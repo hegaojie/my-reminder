@@ -1,0 +1,18 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>Reminder Detail</ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+
+    <ion-list>
+        <ion-item>
+            <ion-label floating>Description</ion-label>
+            <ion-input type="text" [(ngModel)]="tempReminder.description"></ion-input>
+        </ion-item>
+    </ion-list>
+
+    <p>{{reminder.description}}</p>
+    <button ion-button full (click)="saveReminder()" >Save</button>
+</ion-content>
