@@ -1,28 +1,32 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 
+import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
+
 @Component({
   templateUrl: 'reminder-detail.page.html',
 })
 export class ReminderDetailPage {
 
-  reminder = {};
+  reminder: any;
+  localReminder: any = {};
 
-  tempReminder = {};
-
-  constructor(private nav: NavController, private navParams: NavParams) {
-
+  constructor(private nav: NavController, private navParams: NavParams, private sql: SQLite) {
   }
 
 
   ionViewDidLoad(){
     this.reminder = this.navParams.data;
-    this.tempReminder = this.reminder;
+
+    this.localReminder = JSON.parse(JSON.stringify(this.reminder));
   }
 
 
   saveReminder(){
-    this.nav.popToRoot()
-    
+   
+    this.reminder.description = this.localReminder.description;
+    this.nav.popToRoot();
+   
+    //todo: 
   }
 }
