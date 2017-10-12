@@ -6,7 +6,7 @@ import { StatusBar } from '@ionic-native/status-bar';
 
 import { MyApp } from './app.component';
 import { MyRemindersPage, ReminderDetailPage } from '../pages/pages';
-import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
+import { SQLite } from '@ionic-native/sqlite';
 
 @NgModule({
   declarations: [
@@ -28,7 +28,6 @@ import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
     StatusBar,
     SplashScreen,
     SQLite,
-    SQLiteObject,    
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

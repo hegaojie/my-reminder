@@ -17,10 +17,14 @@ export class MyRemindersPage {
   ionViewDidLoad(){
     this.items = [{
       id: 1,
-      description: 'reminder 001'
+      description: 'reminder 001',
+      date: '2017-01-01',
+      calendar: 'l'
     }, {
       id: 2,
-      description: 'reminder 002'
+      description: 'reminder 002',
+      date: '2017-02-02',
+      calendar: 's'
     }];
   }
 

@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, ToastController } from 'ionic-angular';
 
-import { SQLite, SQLiteObject } from '@ionic-native/sqlite';
+import { SQLite } from '@ionic-native/sqlite';
+
 
 @Component({
   templateUrl: 'reminder-detail.page.html',
@@ -11,13 +12,16 @@ export class ReminderDetailPage {
   reminder: any;
   localReminder: any = {};
 
-  constructor(private nav: NavController, private navParams: NavParams, private sql: SQLite) {
+  constructor(
+    private toastCtrl: ToastController,
+    private nav: NavController, 
+    private navParams: NavParams, 
+    private sql: SQLite) {
   }
 
 
   ionViewDidLoad(){
     this.reminder = this.navParams.data;
-
     this.localReminder = JSON.parse(JSON.stringify(this.reminder));
   }
 
@@ -25,8 +29,20 @@ export class ReminderDetailPage {
   saveReminder(){
    
     this.reminder.description = this.localReminder.description;
+    this.reminder.date = this.localReminder.date;
+    this.reminder.calendar = this.localReminder.calendar;
+    this.presentToast();
     this.nav.popToRoot();
    
     //todo: 
+  }
+
+  presentToast(){
+    let toast = this.toastCtrl.create({
+      message: 'Reminder was updated successfully',
+      duration: 2000,
+      position: 'top'
+    });
+    toast.present();
   }
 }
