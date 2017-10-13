@@ -9,44 +9,34 @@ import { ReminderStorage } from '../../shared/shared';
 })
 export class MyRemindersPage {
 
-  items: any[];
+  items = [];
 
   constructor(private nav: NavController, private rs: ReminderStorage) {
 
   }
 
   ionViewDidLoad(){
-    let item1 = {
-      description: 'reminder 001',
-    date: '2017-01-01',
-    calendar: 'l'};
-
-    let item2 = {description: 'reminder 002',
-    date: '2017-02-02',
-    calendar: 's'};
-    
-
-    this.rs.insertReminder(item1);
-
-    this.rs.insertReminder(item2);
-
-    this.rs.getMyReminders().then(data => this.items = data);
-    // this.items = [{
-    //   id: 1,
+    // let item1 = {id: '1',
     //   description: 'reminder 001',
-    //   date: '2017-01-01',
-    //   calendar: 'l'
-    // }, {
-    //   id: 2,
+    // date: '2017-01-01',
+    // calendar: 'l'};
+
+    // let item2 = {
+    //   id: '2',
     //   description: 'reminder 002',
-    //   date: '2017-02-02',
-    //   calendar: 's'
-    // }];
+    // date: '2017-02-02',
+    // calendar: 's'};
+    
+    // this.rs.insertReminder(item1);
+    // this.rs.insertReminder(item2);
+  }
 
-
+  ionViewDidEnter(){
+    this.items = this.rs.getAllReminders();
   }
 
   removeReminder($event, item){
+    // this.rs.deleteReminder(item);
     this.items = this.items.filter(i => {return i != item});
   }
 

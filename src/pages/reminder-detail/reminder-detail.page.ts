@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, ToastController } from 'ionic-angular';
 
-import { SQLite } from '@ionic-native/sqlite';
 
 
 @Component({
@@ -15,8 +14,8 @@ export class ReminderDetailPage {
   constructor(
     private toastCtrl: ToastController,
     private nav: NavController, 
-    private navParams: NavParams, 
-    private sql: SQLite) {
+    private navParams: NavParams
+    ) {
   }
 
 
