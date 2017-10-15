@@ -4,9 +4,11 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 
+import { IonicStorageModule } from '@ionic/storage';
+
 import { MyApp } from './app.component';
 import { MyRemindersPage, ReminderDetailPage } from '../pages/pages';
-import { SQLite } from '@ionic-native/sqlite';
+import { ReminderStorage } from '../shared/shared';
 
 @NgModule({
   declarations: [
@@ -16,7 +18,8 @@ import { SQLite } from '@ionic-native/sqlite';
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    IonicModule.forRoot(MyApp),
+    IonicStorageModule.forRoot(),
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -27,7 +30,7 @@ import { SQLite } from '@ionic-native/sqlite';
   providers: [
     StatusBar,
     SplashScreen,
-    SQLite,
+    ReminderStorage,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
