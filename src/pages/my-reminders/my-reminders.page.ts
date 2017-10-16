@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController, Events } from 'ionic-angular';
 import { LocalNotifications } from '@ionic-native/local-notifications';
-
 import { ReminderDetailPage } from '../pages';
 import { ReminderStorage, CalendarService } from '../../shared/shared';
-
 
 @Component({
   templateUrl: 'my-reminders.page.html',
@@ -33,33 +31,33 @@ export class MyRemindersPage {
     });
 
     this.items = [];
-    this.rs.getAllReminders((data)=>{this.items.push(data)});
+    this.rs.getAllReminders((data)=>{
+      this.items.push(data);
+    });
 
-    //todo: init checker
-    setInterval(()=>{
-      this.items.forEach((v, i)=>{
-        let tdate = new Date();
-        let month = tdate.getMonth(); //0 based
-        let date = tdate.getDate();
+    // let index = 0;
+    // setInterval(()=>{
+    //   this.items.forEach((v, i)=>{
+    //     let tdate = new Date();
+    //     let month = tdate.getMonth(); //0 based
+    //     let date = tdate.getDate();
         
-        let rdate = this.cs.getSolarCalendarDate(tdate.getFullYear(), new Date(v.date), v.calendar);
-        let rmonth = rdate.getMonth();
-        let rsdate = rdate.getDate();
+    //     let rdate = this.cs.getSolarCalendarDate(tdate.getFullYear(), new Date(v.date), v.calendar);
+    //     let rmonth = rdate.getMonth();
+    //     let rsdate = rdate.getDate();
 
-        if (rmonth === month && rsdate === date){
-          //todo: send local notification
-          console.log("It is today");
-          this.notification.schedule({
-            id: 1,
-            text: `${v.description} is today`
-          });
-        }
-      });
-    }, 5000);
+    //     if (rmonth === month && rsdate === date){
+    //       this.notification.schedule({
+    //         id: 1,
+    //         text: `'${v.description}' is today`
+    //       });
+    //     }
+    //   });
+    // }, 5000);
   }
 
   removeReminder($event, item){
-    let index = this.items.indexOf(item);
+    let index = this.items.findIndex(r => r.id === item.id);
     if (index > -1) {
       this.items.splice(index, 1);
     }
@@ -74,4 +72,39 @@ export class MyRemindersPage {
   addReminder(){
     this.nav.push(ReminderDetailPage, {id: -1, description: "", date: "", calendar: "s"});
   }
+
+  getCalendarType(reminder){
+    if (reminder.calendar === "l"){
+      return "农";
+    }
+    else{
+      return "阳";
+    }
+  }
+
+  getCalendarColor(reminder){
+    if (reminder.calendar === "l"){
+      return "danger";
+    }
+    else{
+      return "custom03";
+    }
+  }
+
+  filterReminders(ev){
+
+    if (this.origItems.length <= 0 ){
+      this.origItems = this.items.slice(0);
+      this.origItems.reverse();
+    }
+
+    this.items = this.origItems;
+    
+    let query = ev.target.value;
+    if (query && query.trim() != ''){
+      this.items = this.items.filter(i => {return i.description.toLowerCase().indexOf(query.toLowerCase()) > -1});
+    }
+  }
+
+  private origItems = [];
 }

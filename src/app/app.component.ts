@@ -22,5 +22,9 @@ export class MyApp {
       splashScreen.hide();
     });
   }
+
+  goToSettings(){
+    
+  }
 }
 

@@ -1,6 +1,9 @@
 <ion-header>
-    <ion-navbar>
-        <ion-title>My Reminders</ion-title>
+    <ion-navbar color="custom03">
+            <button ion-button menuToggle>
+                    <ion-icon name="menu"></ion-icon>
+                  </button>
+        <ion-title center>My Reminders</ion-title>
         <ion-buttons end>
             <button ion-button icon-only outline large (click)="addReminder()"><ion-icon name="add" large></ion-icon></button>
         </ion-buttons>
@@ -9,17 +12,22 @@
 </ion-header>
 
 <ion-content>
-
-<ion-list>
-    <ion-item-sliding #sitem *ngFor="let item of items">
-        <ion-item>{{item.description}}</ion-item>
-        <ion-item-options side="right">
-            <button ion-button color="secondary" (click)="editReminder($event, item, sitem)">Edit</button>
-            <button ion-button color="danger" (click)="removeReminder($event, item)">
-                <ion-icon name="trash"></ion-icon>
-            </button>
-        </ion-item-options>
-    </ion-item-sliding>
-</ion-list>
+    <ion-refresher>
+        <ion-searchbar (ionInput)="filterReminders($event)"></ion-searchbar>    
+    </ion-refresher>
+    <ion-list>
+        <ion-item-sliding #sitem *ngFor="let item of items">
+            <ion-item>
+                <h2>{{item.description}}</h2>
+                <p><ion-badge [color]="getCalendarColor(item)">{{getCalendarType(item)}}</ion-badge> {{item.date}}</p>
+            </ion-item>
+            <ion-item-options side="right">
+                <button ion-button color="secondary" (click)="editReminder($event, item, sitem)">Edit</button>
+                <button ion-button color="danger" (click)="removeReminder($event, item)">
+                    <ion-icon name="trash"></ion-icon>
+                </button>
+            </ion-item-options>
+        </ion-item-sliding>
+    </ion-list>
 
 </ion-content>
