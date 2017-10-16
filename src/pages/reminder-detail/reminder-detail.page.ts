@@ -44,7 +44,7 @@ export class ReminderDetailPage {
     let toast = this.toastCtrl.create({
       message: 'Reminder was saved successfully',
       duration: 2000,
-      position: 'top'
+      position: 'bottom'
     });
     toast.present();
   }

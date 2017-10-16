@@ -4,11 +4,13 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 
+import { LocalNotifications } from '@ionic-native/local-notifications';
+
 import { IonicStorageModule } from '@ionic/storage';
 
 import { MyApp } from './app.component';
 import { MyRemindersPage, ReminderDetailPage } from '../pages/pages';
-import { ReminderStorage } from '../shared/shared';
+import { ReminderStorage, CalendarService } from '../shared/shared';
 
 @NgModule({
   declarations: [
@@ -31,6 +33,8 @@ import { ReminderStorage } from '../shared/shared';
     StatusBar,
     SplashScreen,
     ReminderStorage,
+    CalendarService,
+    LocalNotifications,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
