@@ -41,14 +41,6 @@ export class MyRemindersPage {
     let index = 0;
     setInterval(()=>{
       this.items.forEach((v, i)=>{
-        // let tdate = new Date();
-        // let month = tdate.getMonth(); //0 based
-        // let date = tdate.getDate();
-        
-        // let rdate = this.cs.getSolarCalendarDate(tdate.getFullYear(), new Date(v.date), v.calendar);
-        // let rmonth = rdate.getMonth();
-        // let rsdate = rdate.getDate();
-
         if (this.cs.isToday(v)){
           this.notification.schedule({
             id: 1,
