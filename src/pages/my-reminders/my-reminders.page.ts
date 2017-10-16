@@ -20,6 +20,9 @@ export class MyRemindersPage {
   }
 
   ionViewDidLoad(){
+
+    this.rs.deleteReminder({id:"1"});
+    this.rs.deleteReminder({id:"2"});
     this.events.subscribe('reminder:changed', (reminder)=>{
       let index = this.items.findIndex(r => r.id === reminder.id);
       if (index > -1) {
@@ -35,25 +38,25 @@ export class MyRemindersPage {
       this.items.push(data);
     });
 
-    // let index = 0;
-    // setInterval(()=>{
-    //   this.items.forEach((v, i)=>{
-    //     let tdate = new Date();
-    //     let month = tdate.getMonth(); //0 based
-    //     let date = tdate.getDate();
+    let index = 0;
+    setInterval(()=>{
+      this.items.forEach((v, i)=>{
+        // let tdate = new Date();
+        // let month = tdate.getMonth(); //0 based
+        // let date = tdate.getDate();
         
-    //     let rdate = this.cs.getSolarCalendarDate(tdate.getFullYear(), new Date(v.date), v.calendar);
-    //     let rmonth = rdate.getMonth();
-    //     let rsdate = rdate.getDate();
+        // let rdate = this.cs.getSolarCalendarDate(tdate.getFullYear(), new Date(v.date), v.calendar);
+        // let rmonth = rdate.getMonth();
+        // let rsdate = rdate.getDate();
 
-    //     if (rmonth === month && rsdate === date){
-    //       this.notification.schedule({
-    //         id: 1,
-    //         text: `'${v.description}' is today`
-    //       });
-    //     }
-    //   });
-    // }, 5000);
+        if (this.cs.isToday(v)){
+          this.notification.schedule({
+            id: 1,
+            text: `'${v.description}' is today`
+          });
+        }
+      });
+    }, 10000);
   }
 
   removeReminder($event, item){

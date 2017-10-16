@@ -16,4 +16,16 @@ export class CalendarService {
         
         return date;
     }
+
+    isToday(reminder){
+        let today = new Date();
+        let tmonth = today.getMonth(); //0 based
+        let tdate = today.getDate();
+        
+        let rdate = this.getSolarCalendarDate(today.getFullYear(), new Date(reminder.date), reminder.calendar);
+        let rmonth = rdate.getMonth();
+        let rsdate = rdate.getDate();
+
+        return rmonth === tmonth && rsdate === tdate;
+    }
 }
