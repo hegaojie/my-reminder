@@ -41,14 +41,15 @@ export class MyRemindersPage {
     let index = 0;
     setInterval(()=>{
       this.items.forEach((v, i)=>{
-        if (this.cs.isToday(v)){
+        if (this.cs.shouldRemind(v)){
           this.notification.schedule({
             id: 1,
-            text: `'${v.description}' is today`
+            title: 'My Reminder',
+            text: `'${v.description}'`
           });
         }
       });
-    }, 10000);
+    }, 1000 * 3600 * 24);
   }
 
   removeReminder($event, item){
@@ -65,7 +66,7 @@ export class MyRemindersPage {
   }
 
   addReminder(){
-    this.nav.push(ReminderDetailPage, {id: -1, description: "", date: "", calendar: "s"});
+    this.nav.push(ReminderDetailPage, {id: -1, description: "", date: "", calendar: "s", enableReminding: true});
   }
 
   getCalendarType(reminder){
