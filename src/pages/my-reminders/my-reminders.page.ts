@@ -10,8 +10,8 @@ import { ReminderStorage, CalendarService } from '../../shared/shared';
 export class MyRemindersPage {
   private items = [];
   private origItems = [];
-
-  // private allSecondsADay = 86400000;
+  private intervalIds: number[] = [];
+  private dailyIntervalId : number = 0;
 
   constructor(
     private toastCtrl: ToastController,
@@ -27,9 +27,19 @@ export class MyRemindersPage {
     this.refreshReminders().then(()=>this.setupReminding());
 
     // refresh data once a day automatically
-    setInterval(()=>{
-      this.refreshReminders().then(()=>this.setupReminding());
+    this.dailyIntervalId = setInterval(()=>{
+      this.refreshReminders().then(()=>{this.setupReminding();});
     }, this.cs.ALL_SECONDS_A_DAY);
+  }
+
+  ionViewWillUnload(){
+    clearInterval(this.dailyIntervalId);
+    this.clearAllRemindingIntervals();
+  }
+
+  private clearAllRemindingIntervals(){
+    this.intervalIds.forEach((v, i)=>{clearInterval(v)});
+    this.intervalIds = [];
   }
 
   subscribeEvents(){
@@ -49,17 +59,22 @@ export class MyRemindersPage {
   }
 
   setupReminding(){
-    setInterval(()=>{
-      this.items.forEach((v, i)=>{
-        if (this.shouldRemind(v)){
+    this.clearAllRemindingIntervals();
+
+    this.items.forEach((v, i)=>{
+      if (this.shouldRemind(v)) {
+        let intervalId = setInterval(()=>{
           this.notification.schedule({
             id: v.id,
             title: 'My Reminder',
             text: `'${v.description}'`
-           });
-         }
-       });
-     }, 1000 * 3600 * 24);
+          });
+
+        }, Math.round(this.cs.ALL_SECONDS_A_DAY / v.remindingTimes));
+        
+        this.intervalIds.push(intervalId);
+      }
+    });
   }
 
   shouldRemind(reminder){
@@ -96,7 +111,7 @@ export class MyRemindersPage {
   }
 
   addReminder(){
-    this.nav.push(ReminderDetailPage, {id: -1, description: "", date: "", calendar: "s", enableReminding: true, beforeReminding: 0});
+    this.nav.push(ReminderDetailPage, {id: -1, description: "", date: "", calendar: "s", enableReminding: true, beforeReminding: 0, remindingTimes: 1});
   }
 
   getItemClass(reminder){
@@ -125,6 +140,9 @@ export class MyRemindersPage {
   }
 
   doRefresh(refresher){
-    this.refreshReminders().then(()=>refresher.complete());
+    this.refreshReminders().then(()=>{
+      this.setupReminding();
+      refresher.complete();
+    });
   }
 }

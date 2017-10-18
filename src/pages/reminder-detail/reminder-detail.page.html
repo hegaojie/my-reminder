@@ -48,9 +48,14 @@
         </ion-item>
 
         <ion-item>
-                <ion-label>Enable reminding</ion-label>
-                <ion-toggle color="secondary" [(ngModel)]="localReminder.enableReminding"></ion-toggle>
-              </ion-item>
+            <ion-label>Enable reminding</ion-label>
+            <ion-toggle color="secondary" [(ngModel)]="localReminder.enableReminding"></ion-toggle>
+        </ion-item>
+
+        <ion-item>
+            <ion-label>Notification times per day</ion-label>
+            <ion-input type="number" [(ngModel)]="localReminder.remindingTimes"></ion-input>
+        </ion-item>
     </ion-list>
 
     
