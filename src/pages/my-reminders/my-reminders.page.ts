@@ -10,7 +10,7 @@ import { ReminderStorage, CalendarService } from '../../shared/shared';
 export class MyRemindersPage {
   private items = [];
   private origItems = [];
-  private intervalIds: number[] = [];
+  private intervalIds: any[] = [];
   private dailyIntervalId : number = 0;
 
   constructor(
@@ -38,7 +38,7 @@ export class MyRemindersPage {
   }
 
   private clearAllRemindingIntervals(){
-    this.intervalIds.forEach((v, i)=>{clearInterval(v)});
+    this.intervalIds.forEach((v, i)=>{clearInterval(v.intervalId)});
     this.intervalIds = [];
   }
 
@@ -56,24 +56,34 @@ export class MyRemindersPage {
     this.events.subscribe('reminder:deleted', (reminder)=>{
       this.removeReminder(reminder);
     });
+
+    this.events.subscribe('notification:adjusted', (reminder)=>{
+      let index = this.intervalIds.findIndex(i => i.id === reminder.id);
+      let val = this.intervalIds[index];
+      clearInterval(val.intervalId);
+      this.intervalIds.splice(index, 1);
+      this.setNotificationForReminder(reminder);
+    });
+  }
+
+  setNotificationForReminder(reminder){
+    if (this.shouldRemind(reminder)){
+      let intervalId = setInterval(()=>{
+        this.notification.schedule({
+          id: reminder.id,
+          title: 'My Reminder',
+          text: `'${reminder.description}'`
+        });
+
+      }, Math.round(this.cs.ALL_SECONDS_A_DAY / reminder.remindingTimes));
+      this.intervalIds.push({id: reminder.id, intervalId: intervalId});
+    }
   }
 
   setupReminding(){
     this.clearAllRemindingIntervals();
-
     this.items.forEach((v, i)=>{
-      if (this.shouldRemind(v)) {
-        let intervalId = setInterval(()=>{
-          this.notification.schedule({
-            id: v.id,
-            title: 'My Reminder',
-            text: `'${v.description}'`
-          });
-
-        }, Math.round(this.cs.ALL_SECONDS_A_DAY / v.remindingTimes));
-        
-        this.intervalIds.push(intervalId);
-      }
+      this.setNotificationForReminder(v);
     });
   }
 
@@ -82,7 +92,7 @@ export class MyRemindersPage {
       return false;
     }
 
-    return this.cs.ifReachToday(reminder.calendar, reminder.date, reminder.beforeReminding);
+    return this.cs.ifReachToDay(reminder.calendar, reminder.date, reminder.beforeReminding);
   }
 
   refreshReminders(){
@@ -111,7 +121,13 @@ export class MyRemindersPage {
   }
 
   addReminder(){
-    this.nav.push(ReminderDetailPage, {id: -1, description: "", date: "", calendar: "s", enableReminding: true, beforeReminding: 0, remindingTimes: 1});
+    this.nav.push(ReminderDetailPage, {id: -1, description: "", 
+    date: this.cs.fromDateToShortDateString(new Date()),
+    calendar: "s", 
+    enableReminding: 
+    true, 
+    beforeReminding: 0, 
+    remindingTimes: 1});
   }
 
   getItemClass(reminder){

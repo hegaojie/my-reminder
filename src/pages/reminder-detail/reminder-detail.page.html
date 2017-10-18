@@ -8,13 +8,13 @@
 
     <ion-list>
         <ion-item>
-            <ion-label color="custom04" floating>Description</ion-label>
+            <ion-label color="custom04" fixed>Description</ion-label>
             <ion-input type="text" [(ngModel)]="localReminder.description"></ion-input>
         </ion-item>
 
         
         <ion-item>
-            <ion-label color="custom04" floating>Calendar</ion-label>
+            <ion-label color="custom04" fixed>Calendar</ion-label>
             <ion-select interface="popover" [(ngModel)]="localReminder.calendar">
                 <ion-option value="s">Solar Calendar</ion-option>
                 <ion-option value="l">Lunar Calender</ion-option>
@@ -23,18 +23,23 @@
 
         <!-- Date -->
         <ion-item>
-            <ion-label color="custom04" floating>Date</ion-label>
+            <ion-label color="custom04" fixed>Date</ion-label>
             <ion-datetime displayFormat="YYYY MMMM DD" pickerFormat="MMM DD YYYY" [(ngModel)]="localReminder.date"></ion-datetime>
         </ion-item>
 
         <!-- Solar Date-->
         <ion-item *ngIf='localReminder.calendar === "l"'>
-            <ion-label color="custom04" floating>Solar Date</ion-label>
+            <ion-label color="custom04" fixed>Solar Date</ion-label>
             <ion-input type="text" disabled="true" [value]="toSolarDateShortString(localReminder.date)"></ion-input>
         </ion-item>
-        
+
         <ion-item>
-            <ion-label color="custom04" floating>Days before reminding</ion-label>
+            <ion-label color="custom04">Notification</ion-label>
+            <ion-toggle color="secondary" [(ngModel)]="localReminder.enableReminding"></ion-toggle>
+        </ion-item>
+
+        <ion-item>
+            <ion-label color="custom04" stacked>Notification In Advance (Days)</ion-label>
             <ion-select interface="popover" [(ngModel)]="localReminder.beforeReminding">
                 <ion-option value=0>0</ion-option>
                 <ion-option value=1>1</ion-option>
@@ -48,17 +53,11 @@
         </ion-item>
 
         <ion-item>
-            <ion-label>Enable reminding</ion-label>
-            <ion-toggle color="secondary" [(ngModel)]="localReminder.enableReminding"></ion-toggle>
-        </ion-item>
-
-        <ion-item>
-            <ion-label>Notification times per day</ion-label>
+            <ion-label color="custom04" stacked>Notification Frequency Per Day</ion-label>
             <ion-input type="number" [(ngModel)]="localReminder.remindingTimes"></ion-input>
         </ion-item>
     </ion-list>
-
     
-    <button ion-button full (click)="saveReminder()" color="custom03" >Save</button>
+    <button ion-button full (click)="saveReminder()" color="custom03" [disabled]="!localReminder.description " >Save</button>
     <button ion-button full (click)="deleteReminder()" color="danger" [disabled]='localReminder.id &lt; 0'>Delete</button>
 </ion-content>

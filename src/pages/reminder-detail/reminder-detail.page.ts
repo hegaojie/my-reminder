@@ -32,10 +32,21 @@ export class ReminderDetailPage {
     else {
       this.storage.updateReminder(this.localReminder);
     }
+
+    if (this.ifNotificationAdjusted()){
+      this.events.publish('notification:adjusted', this.localReminder);
+    }
     
     this.events.publish('reminder:changed', this.localReminder);
     this.presentToast(`Reminder '${this.localReminder.description}' was saved successfully`);
     this.nav.popToRoot();
+  }
+
+  ifNotificationAdjusted(){
+    return this.reminder.enableReminding !== this.localReminder.enableReminding 
+    || this.reminder.date !== this.localReminder.date
+    || this.reminder.remindingTimes !== this.localReminder.remindingTimes
+    || this.reminder.beforeReminding !== this.localReminder.beforeReminding;
   }
 
   deleteReminder(){
