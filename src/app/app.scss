@@ -14,3 +14,35 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+
+
+ .color-danger {
+    background: #FF5320
+}
+
+.color-warn {
+    background: #FFC220
+}
+
+.color-normal {
+    background: #ACE1AD;
+}
+
+.color-label {
+    color: #A4ACAF;
+}
+
+
+.item-description {
+    font-weight: 800;
+    font-size: 20px;
+}
+
+.item-suffix {
+    font-size: 12px;
+
+}
+
+.no-padding {
+    padding: 0px !important;
+}

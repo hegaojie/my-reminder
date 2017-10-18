@@ -12,18 +12,25 @@
             <ion-input type="text" [(ngModel)]="localReminder.description"></ion-input>
         </ion-item>
 
-        <ion-item>
-            <ion-label color="custom04" floating>Date</ion-label>
-            <ion-datetime displayFormat="YYYY MMMM DD" pickerFormat="MMM DD YYYY" [(ngModel)]="localReminder.date"></ion-datetime>
-        </ion-item>
-
-
+        
         <ion-item>
             <ion-label color="custom04" floating>Calendar</ion-label>
             <ion-select interface="popover" [(ngModel)]="localReminder.calendar">
                 <ion-option value="s">Solar Calendar</ion-option>
                 <ion-option value="l">Lunar Calender</ion-option>
             </ion-select>
+        </ion-item>
+
+        <!-- Date -->
+        <ion-item>
+            <ion-label color="custom04" floating>Date</ion-label>
+            <ion-datetime displayFormat="YYYY MMMM DD" pickerFormat="MMM DD YYYY" [(ngModel)]="localReminder.date"></ion-datetime>
+        </ion-item>
+
+        <!-- Solar Date-->
+        <ion-item *ngIf='localReminder.calendar === "l"'>
+            <ion-label color="custom04" floating>Solar Date</ion-label>
+            <ion-input type="text" disabled="true" [value]="toSolarDateShortString(localReminder.date)"></ion-input>
         </ion-item>
         
         <ion-item>
@@ -48,4 +55,5 @@
 
     
     <button ion-button full (click)="saveReminder()" color="custom03" >Save</button>
+    <button ion-button full (click)="deleteReminder()" color="danger" [disabled]='localReminder.id &lt; 0'>Delete</button>
 </ion-content>

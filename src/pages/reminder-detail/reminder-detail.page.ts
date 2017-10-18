@@ -1,9 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, ToastController, Events } from 'ionic-angular';
-
-import { ReminderStorage } from '../../shared/shared';
-
-
+import { ReminderStorage, CalendarService } from '../../shared/shared';
 
 @Component({
   templateUrl: 'reminder-detail.page.html',
@@ -14,6 +11,7 @@ export class ReminderDetailPage {
   localReminder: any = {};
 
   constructor(
+    private cs: CalendarService,
     private events: Events,
     private toastCtrl: ToastController,
     private nav: NavController, 
@@ -36,16 +34,27 @@ export class ReminderDetailPage {
     }
     
     this.events.publish('reminder:changed', this.localReminder);
-    this.presentToast();
+    this.presentToast(`Reminder '${this.localReminder.description}' was saved successfully`);
     this.nav.popToRoot();
   }
 
-  presentToast(){
+  deleteReminder(){
+    this.events.publish('reminder:deleted', this.localReminder);
+    this.presentToast(`Reminder '${this.localReminder.description}' was deleted successfully`);
+    this.nav.popToRoot();
+  }
+
+  presentToast(msg){
     let toast = this.toastCtrl.create({
-      message: 'Reminder was saved successfully',
+      message: msg,
       duration: 2000,
       position: 'bottom'
     });
     toast.present();
+  }
+
+  toSolarDateShortString(lunarDateStr){
+    let solarDate = this.cs.convertToSolarDateFromString(lunarDateStr);
+    return this.cs.fromDateToShortDateString(solarDate);
   }
 }

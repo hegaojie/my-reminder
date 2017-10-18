@@ -42,8 +42,12 @@ $colors: (
   custom01:   #4c5b54,
   custom02:   #e07308,
   custom03:   #0087be,
-  custom04:   #8a9094
+  custom04:   #8a9094,
+  warn:       #FFC220,
 );
+
+$grid-padding-width: 0px;
+
 
 // App iOS Variables
 // --------------------------------------------------

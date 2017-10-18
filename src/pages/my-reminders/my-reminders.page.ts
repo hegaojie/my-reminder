@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, Events } from 'ionic-angular';
+import { NavController, Events, ToastController } from 'ionic-angular';
 import { LocalNotifications } from '@ionic-native/local-notifications';
 import { ReminderDetailPage } from '../pages';
 import { ReminderStorage, CalendarService } from '../../shared/shared';
@@ -8,10 +8,13 @@ import { ReminderStorage, CalendarService } from '../../shared/shared';
   templateUrl: 'my-reminders.page.html',
 })
 export class MyRemindersPage {
-
   private items = [];
+  private origItems = [];
+
+  // private allSecondsADay = 86400000;
 
   constructor(
+    private toastCtrl: ToastController,
     private notification: LocalNotifications,
     private cs: CalendarService,
     private events: Events,
@@ -20,9 +23,16 @@ export class MyRemindersPage {
   }
 
   ionViewDidLoad(){
+    this.subscribeEvents();
+    this.refreshReminders().then(()=>this.setupReminding());
 
-    this.rs.deleteReminder({id:"1"});
-    this.rs.deleteReminder({id:"2"});
+    // refresh data once a day automatically
+    setInterval(()=>{
+      this.refreshReminders().then(()=>this.setupReminding());
+    }, this.cs.ALL_SECONDS_A_DAY);
+  }
+
+  subscribeEvents(){
     this.events.subscribe('reminder:changed', (reminder)=>{
       let index = this.items.findIndex(r => r.id === reminder.id);
       if (index > -1) {
@@ -33,31 +43,51 @@ export class MyRemindersPage {
       }
     });
 
-    this.items = [];
-    this.rs.getAllReminders((data)=>{
-      this.items.push(data);
+    this.events.subscribe('reminder:deleted', (reminder)=>{
+      this.removeReminder(reminder);
     });
-
-    let index = 0;
-    setInterval(()=>{
-      this.items.forEach((v, i)=>{
-        if (this.cs.shouldRemind(v)){
-          this.notification.schedule({
-            id: 1,
-            title: 'My Reminder',
-            text: `'${v.description}'`
-          });
-        }
-      });
-    }, 1000 * 3600 * 24);
   }
 
-  removeReminder($event, item){
+  setupReminding(){
+    setInterval(()=>{
+      this.items.forEach((v, i)=>{
+        if (this.shouldRemind(v)){
+          this.notification.schedule({
+            id: v.id,
+            title: 'My Reminder',
+            text: `'${v.description}'`
+           });
+         }
+       });
+     }, 1000 * 3600 * 24);
+  }
+
+  shouldRemind(reminder){
+    if (!reminder.enableReminding){
+      return false;
+    }
+
+    return this.cs.ifReachToday(reminder.calendar, reminder.date, reminder.beforeReminding);
+  }
+
+  refreshReminders(){
+    this.items = [];
+    return this.rs.getAllReminders((data)=>this.items.push(data));
+  }
+
+  removeReminder(item){
     let index = this.items.findIndex(r => r.id === item.id);
     if (index > -1) {
       this.items.splice(index, 1);
     }
     this.rs.deleteReminder(item);
+
+    let toast = this.toastCtrl.create({
+      message: `Reminder '${item.description}' was deleted successfully`,
+      duration: 2000,
+      position: 'bottom'
+    });
+    toast.present();
   }
 
   editReminder($event, item, sitem){
@@ -66,29 +96,17 @@ export class MyRemindersPage {
   }
 
   addReminder(){
-    this.nav.push(ReminderDetailPage, {id: -1, description: "", date: "", calendar: "s", enableReminding: true});
+    this.nav.push(ReminderDetailPage, {id: -1, description: "", date: "", calendar: "s", enableReminding: true, beforeReminding: 0});
   }
 
-  getCalendarType(reminder){
-    if (reminder.calendar === "l"){
-      return "农";
-    }
-    else{
-      return "阳";
-    }
-  }
-
-  getCalendarColor(reminder){
-    if (reminder.calendar === "l"){
-      return "danger";
-    }
-    else{
-      return "custom03";
-    }
+  getItemClass(reminder){
+    let daysDiff = this.getDaysDifference(reminder);
+    if (daysDiff <= 3) {return "danger"};
+    if (daysDiff <= 7) {return "warn"};
+    return "custom03";
   }
 
   filterReminders(ev){
-
     if (this.origItems.length <= 0 ){
       this.origItems = this.items.slice(0);
       this.origItems.reverse();
@@ -102,5 +120,11 @@ export class MyRemindersPage {
     }
   }
 
-  private origItems = [];
+  getDaysDifference(reminder){
+    return this.cs.getDaysDifference(reminder.date, reminder.calendar);
+  }
+
+  doRefresh(refresher){
+    this.refreshReminders().then(()=>refresher.complete());
+  }
 }
