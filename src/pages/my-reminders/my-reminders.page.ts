@@ -4,15 +4,6 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
 import { ReminderDetailPage } from '../pages';
 import { ReminderStorage, CalendarService } from '../../shared/shared';
 
-/*todo:
-1. after fetch all reminders //done
-2. after save a new reminder
-3. delete a reminder
-4. refresh all reminders
-5. unload main list
-
-
-*/
 @Component({
   templateUrl: 'my-reminders.page.html',
 })
