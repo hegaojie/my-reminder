@@ -50,11 +50,13 @@ export class MyRemindersPage {
 
     this.events.subscribe('reminder:updated', (data)=>{
       let index = this.items.findIndex(r => r.id === data.reminder.id);
-      this.items[index] = data.reminder;
-
-      if (data.notificationAdjusted){
-        this.removeNotification(data.reminder);
-        this.setNotificationForReminder(data.reminder);
+      if (index > -1){
+        this.items[index] = data.reminder;
+        
+              if (data.notificationAdjusted){
+                this.removeNotification(data.reminder);
+                this.setNotificationForReminder(data.reminder);
+              }
       }
     });
 
@@ -66,8 +68,10 @@ export class MyRemindersPage {
 
   removeNotification(reminder){
     let index = this.intervalIds.findIndex(i => i.id === reminder.id);
-    clearInterval(this.intervalIds[index].intervalId);
-    this.intervalIds.splice(index, 1);
+    if (index > -1){
+      clearInterval(this.intervalIds[index].intervalId);
+      this.intervalIds.splice(index, 1);
+    }
   }
 
   setNotificationForReminder(reminder){
