@@ -25,19 +25,20 @@ export class ReminderDetailPage {
     this.localReminder = JSON.parse(JSON.stringify(this.reminder));
   }
 
+  isNew(reminder){
+    return reminder.id < 0;
+  }
+
   saveReminder(){
-    if (this.localReminder.id < 0) {
+    if (this.isNew(this.localReminder)) {
       this.storage.insertReminder(this.localReminder);
+      this.events.publish('reminder:added', this.localReminder);
     }
     else {
       this.storage.updateReminder(this.localReminder);
-    }
-
-    if (this.ifNotificationAdjusted()){
-      this.events.publish('notification:adjusted', this.localReminder);
+      this.events.publish('reminder:updated', {reminder: this.localReminder, notificationAdjusted: this.ifNotificationAdjusted()});
     }
     
-    this.events.publish('reminder:changed', this.localReminder);
     this.presentToast(`Reminder '${this.localReminder.description}' was saved successfully`);
     this.nav.popToRoot();
   }
