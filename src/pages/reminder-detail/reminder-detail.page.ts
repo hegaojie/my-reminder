@@ -9,6 +9,7 @@ export class ReminderDetailPage {
 
   reminder: any;
   localReminder: any = {};
+  solarDate: any;
 
   constructor(
     private cs: CalendarService,

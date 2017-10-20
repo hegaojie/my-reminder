@@ -8,7 +8,7 @@ export class CalendarService {
     public ALL_SECONDS_A_DAY = 86400000;
     public ALL_DAYS_A_YEAR = 365;
 
-    convertToSolarDateFromString(lunarDateString){
+    public convertToSolarDateFromString(lunarDateString: string){
         return this.convertToSolarDateFromDate(new Date(lunarDateString));
     }
 
@@ -34,7 +34,7 @@ export class CalendarService {
     }
 
     isDate1EarlierThanDate2(date1, date2){
-        return (date1.getMonth() < date2.getMonth() || date1.getDate() < date2.getDate());
+        return !(date1.getMonth() > date2.getMonth() || date1.getDate() > date2.getDate());
     }
 
     getDaysDifference(dateStr, calendarType){
